@@ -1,2 +1,2 @@
 # smart-nightlight
-Senior Design Project
+Senior Project
