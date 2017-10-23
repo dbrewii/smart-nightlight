@@ -8,9 +8,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+
+
 
 public class MainActivity extends AppCompatActivity {
-
+    Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +30,24 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
             }
         });
+
+        // Locate the button in activity_main.xml
+        button = (Button) findViewById(R.id.button);
+
+        // Capture button clicks
+        button.setOnClickListener(new OnClickListener() {
+            public void onClick(View arg0) {
+
+                // Start NewActivity.class
+                Intent myIntent = new Intent(MainActivity.this,
+                        SettingsActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
     }
 
     @Override
