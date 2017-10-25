@@ -20,4 +20,15 @@
     <string name="pref_title_minimal">With no alpha or hex fields</string>
     <string name="pref_title_minimal_summary">app:colorpicker_showAlpha=\"false\" and app:colorpicker_showHex=\"false\"</string>
     <string name="pref_show_view_usage_demo">Show view usage demo</string>
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
 </resources>
