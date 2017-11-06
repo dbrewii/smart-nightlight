@@ -20,6 +20,7 @@
     <string name="pref_title_minimal">With no alpha or hex fields</string>
     <string name="pref_title_minimal_summary">app:colorpicker_showAlpha=\"false\" and app:colorpicker_showHex=\"false\"</string>
     <string name="pref_show_view_usage_demo">Show view usage demo</string>
+    <string name="Bluetooth">Bluetooth</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
@@ -31,4 +32,5 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+    <string name="title_activity_bluetooth">BluetoothActivity</string>
 </resources>
