@@ -93,8 +93,13 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         spinner.setAdapter(adapter);
 
         //Bluetooth module
-        btBtn = (Button)findViewById(R.id.button);
-        deviceList = (ListView)findViewById(R.id.listView);
+        btBtn = (Button)findViewById(R.id.button2);
+        btBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, BluetoothActivity.class));
+            }
+        });
 
     }
 
