@@ -22,9 +22,9 @@
     <string name="pref_show_view_usage_demo">Show view usage demo</string>
     <string name="Bluetooth">Bluetooth</string>
 
-    <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
+    <string-array name="presets_array">
+        <item>Baby</item>
+        <item>Pet</item>
         <item>Earth</item>
         <item>Mars</item>
         <item>Jupiter</item>
@@ -33,4 +33,6 @@
         <item>Neptune</item>
     </string-array>
     <string name="title_activity_bluetooth">BluetoothActivity</string>
+    <string name="send">Send</string>
 </resources>
+

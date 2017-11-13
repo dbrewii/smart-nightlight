@@ -31,19 +31,29 @@ import android.bluetooth.BluetoothDevice;
 public class MainActivity extends AppCompatActivity implements OnItemSelectedListener {
     Button button;
     Button btBtn;
+    Button sendBtn;
+
     ListView deviceList;
     private BluetoothAdapter myBluetooth = null;
     private Set pairedDevices;
+    private int colorHex;
+
+    //Bluetooth vars
+    private BluetoothAdapter mBTAdapter;
+    private TextView mBluetoothStatus;
+    private ArrayAdapter<String> mBTArrayAdapter;
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        String[] planetsArray = getResources().getStringArray(R.array.planets_array);
+        String[] presetsArray = getResources().getStringArray(R.array.presets_array);
         //Toast.makeText(getApplicationContext(),planetsArray[pos], Toast.LENGTH_LONG).show();
         // An item was selected. You can retrieve the selected item using
-        if(planetsArray[pos].equals("Mercury")){
+        if(presetsArray[pos].equals("Baby")){
+
             Toast.makeText(getApplicationContext(),"pap",Toast.LENGTH_LONG).show();
         }
-        if(planetsArray[pos].equals("Venus")){
+        if(presetsArray[pos].equals("Pet")){
             Toast.makeText(getApplicationContext(),"pop",Toast.LENGTH_LONG).show();
         }
     }
@@ -69,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
         // Locate the button in activity_main.xml
         button = (Button) findViewById(R.id.button);
+        sendBtn = (Button) findViewById(R.id.button4);
+        btBtn = (Button)findViewById(R.id.button2);
 
         // Capture button clicks
         button.setOnClickListener(new OnClickListener() {
@@ -86,18 +98,28 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.planets_array, android.R.layout.simple_spinner_item);
+                R.array.presets_array, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
         //Bluetooth module
-        btBtn = (Button)findViewById(R.id.button2);
+
         btBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, BluetoothActivity.class));
+            }
+        });
+
+        sendBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(View arg0) {
+
+                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+                //intent.putString("key1", colorHex);// if its string type
+                intent.putExtra("key2", colorHex);// if its int type
+                startActivity(intent);
             }
         });
 
@@ -125,5 +147,9 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    //send Bluetooth signal to microcontroller
+    public void sendSignal(String colorHex){
+
     }
 }
