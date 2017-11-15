@@ -28,6 +28,8 @@ import android.widget.TextView;
 import android.content.Intent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+
+import edu.memphis.teamhack.smart_nightlight.BluetoothActivity;
 //import android.widget.AdapterView.OnClickListener
 
 public class MainActivity extends AppCompatActivity implements OnItemSelectedListener {
@@ -44,6 +46,10 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     private BluetoothAdapter mBTAdapter;
     private TextView mBluetoothStatus;
     private ArrayAdapter<String> mBTArrayAdapter;
+
+    private BluetoothActivity;
+
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view,

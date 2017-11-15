@@ -1,6 +1,6 @@
 package edu.memphis.teamhack.smart_nightlight;
 
-import android.Manifest;
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -12,10 +12,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,39 +31,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.util.Set;
 import java.util.UUID;
 
+public class BluetoothCommService extends Service {
+    public BluetoothCommService() {
+    }
 
-
-public class BluetoothActivity extends AppCompatActivity {
-
-    // GUI Components
-    private TextView mBluetoothStatus;
-    private TextView mReadBuffer;
-    private Button mScanBtn;
-    private Button mOffBtn;
-    private Button mListPairedDevicesBtn;
-    private Button mDiscoverBtn;
-    private BluetoothAdapter mBTAdapter;
-    private Set<BluetoothDevice> mPairedDevices;
-    private ArrayAdapter<String> mBTArrayAdapter;
-    private ListView mDevicesListView;
-    private CheckBox mLED1;
-
-    private final String TAG = MainActivity.class.getSimpleName();
-    private Handler mHandler; // Our main handler that will receive callback notifications
-    private ConnectedThread mConnectedThread; // bluetooth background worker thread to send and receive data
-    private BluetoothSocket mBTSocket = null; // bi-directional client-to-client data path
-
-    private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // "random" unique identifier
-
-
-    // #defines for identifying shared types between calling functions
-    private final static int REQUEST_ENABLE_BT = 1; // used to identify adding bluetooth names
-    private final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
-    private final static int CONNECTING_STATUS = 3; // used in bluetooth handler to identify message status
-
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -364,20 +342,4 @@ public class BluetoothActivity extends AppCompatActivity {
                 mmSocket.close();
             } catch (IOException e) { }
         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
