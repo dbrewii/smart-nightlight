@@ -1,5 +1,7 @@
 package edu.memphis.teamhack.smart_nightlight;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     ListView deviceList;
     private BluetoothAdapter myBluetooth = null;
     private Set pairedDevices;
-    private int colorHex;
+    //private int colorHex=0x345f21;
 
     //Bluetooth vars
     private BluetoothAdapter mBTAdapter;
@@ -86,10 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         button.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
 
-                // Start NewActivity.class
-                Intent myIntent = new Intent(MainActivity.this,
-                        SettingsActivity.class);
-                startActivity(myIntent);
+
             }
         });
 
@@ -109,17 +108,21 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         btBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, BluetoothActivity.class));
+                //startActivity(new Intent(MainActivity.this, BluetoothActivity.class));
+                Intent serviceIntent = new Intent();
+                serviceIntent.setAction("edu.memphis.teamhack.smart_nightlight.BluetoothDataService.class");
+                startService(serviceIntent);
             }
         });
 
         sendBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
-
-                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
-                //intent.putString("key1", colorHex);// if its string type
-                intent.putExtra("key2", colorHex);// if its int type
-                startActivity(intent);
+                //BluetoothActivity.mConnectedThread.write("0x345f21")
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("colorHex", 0x345f21);
+                editor.commit();
+                //((BluetoothDataService)this.getApplication()).setColorHex(0x345f21);
             }
         });
 

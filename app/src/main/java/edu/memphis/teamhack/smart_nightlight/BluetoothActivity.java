@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -81,6 +82,7 @@ public class BluetoothActivity extends AppCompatActivity {
         mDevicesListView.setAdapter(mBTArrayAdapter); // assign model to view
         mDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
+
         // Ask for location permission if not already allowed
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
@@ -113,12 +115,14 @@ public class BluetoothActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Bluetooth device not found!",Toast.LENGTH_SHORT).show();
         }
         else {
-
             mLED1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    if(mConnectedThread != null) //First check to make sure thread created
-                        mConnectedThread.write("1");
+                    SharedPreferences settings = getSharedPreferences("MyPref",
+                            Context.MODE_PRIVATE);
+                    Integer myInt = settings.getInt("colorHex", 0);
+                    if(mConnectedThread != null){ //First check to make sure thread created
+                        mConnectedThread.write(myInt.toString());}
                 }
             });
 
@@ -276,6 +280,7 @@ public class BluetoothActivity extends AppCompatActivity {
                         }
                     }
                     if(fail == false) {
+
                         mConnectedThread = new ConnectedThread(mBTSocket);
                         mConnectedThread.start();
 
