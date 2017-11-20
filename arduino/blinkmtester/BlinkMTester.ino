@@ -98,7 +98,7 @@ void setup()
   //BlinkM_setAddress( blinkm_addr );  // uncomment to set address
   delay(1000);
   
-  Serial.begin(19200);
+  Serial.begin(9600);
 
   help();
   

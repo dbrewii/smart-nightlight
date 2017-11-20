@@ -39,10 +39,6 @@
         </intent-filter>
         </activity>
 
-        <service
-            android:name=".BluetoothCommService"
-            android:enabled="true"
-            android:exported="true"></service>
     </application>
 
 </manifest>

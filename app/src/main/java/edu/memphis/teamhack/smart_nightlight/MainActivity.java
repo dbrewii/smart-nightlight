@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -39,12 +40,18 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
 import edu.memphis.teamhack.smart_nightlight.BluetoothActivity;
+
+import static android.support.v4.math.MathUtils.clamp;
+import static edu.memphis.teamhack.smart_nightlight.R.id.textView;
 //import android.widget.AdapterView.OnClickListener
 
 public class MainActivity extends AppCompatActivity implements OnItemSelectedListener {
     Button button;
     Button btBtn;
     Button sendBtn;
+    SeekBar intensitySB;
+    SeekBar brightnessSB;
+
 
     ListView deviceList;
     private Set pairedDevices;
@@ -55,10 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     private TextView mBluetoothStatus;
     private ArrayAdapter<String> mBTArrayAdapter;
 
-    private BluetoothCommService btCom;
-
     Button btnOn, btnOff, btnDis;
-    SeekBar brightness;
     TextView lumn;
     String address = null;
     BluetoothAdapter myBluetooth = null;
@@ -67,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     //SPP UUID. Look for it
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-
+    int intensity;
+    int brightness;
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view,
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Bluetooth
+            //Bluetooth
         Intent newint = getIntent();
         address = newint.getStringExtra(BluetoothActivity.EXTRA_ADDRESS); //receive the address of the bluetooth device
 
@@ -114,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         });
 
         // Locate the button in activity_main.xml
+        intensitySB = (SeekBar) findViewById(R.id.seekBar4);
+        brightnessSB = (SeekBar) findViewById(R.id.seekBar5);
         button = (Button) findViewById(R.id.button);
         sendBtn = (Button) findViewById(R.id.button4);
         btBtn = (Button)findViewById(R.id.button2);
@@ -151,7 +158,47 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
         sendBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
-                sendParam("COLOR1");
+                sendParam("c00ff00");
+            }
+        });
+
+        intensitySB.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                int intensity = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                intensity = progressValue;
+                //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //Toast.makeText(getApplicationContext(), "Started tracking seekbar", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //Toast.makeText(getApplicationContext(), "Stopped tracking seekbar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        brightnessSB.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int brightness = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                brightness = progressValue;
+                //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //Toast.makeText(getApplicationContext(), "Started tracking seekbar", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //Toast.makeText(getApplicationContext(), "Stopped tracking seekbar", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -218,6 +265,68 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     {
         Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
     }
+
+    public int[] getRGBFromK(int temperature) {
+        // Used this: https://gist.github.com/paulkaplan/5184275 at the beginning
+        // based on http://stackoverflow.com/questions/7229895/display-temperature-as-a-color-with-c
+        // this answer: http://stackoverflow.com/a/24856307
+        // (so, just interpretation of pseudocode in Java)
+
+        double x = temperature / 1000.0;
+        if (x > 40) {
+            x = 40;
+        }
+        double red;
+        double green;
+        double blue;
+
+        // R
+        if (temperature < 6527) {
+            red = 1;
+        } else {
+            double[] redpoly = {4.93596077e0, -1.29917429e0,
+                    1.64810386e-01, -1.16449912e-02,
+                    4.86540872e-04, -1.19453511e-05,
+                    1.59255189e-07, -8.89357601e-10};
+            //red = poly(redpoly, x);
+
+        }
+        // G
+        if (temperature < 850) {
+            green = 0;
+        } else if (temperature <= 6600) {
+            double[] greenpoly = {-4.95931720e-01, 1.08442658e0,
+                    -9.17444217e-01, 4.94501179e-01,
+                    -1.48487675e-01, 2.49910386e-02,
+                    -2.21528530e-03, 8.06118266e-05};
+            //green = poly(greenpoly, x);
+        } else {
+            double[] greenpoly = {3.06119745e0, -6.76337896e-01,
+                    8.28276286e-02, -5.72828699e-03,
+                    2.35931130e-04, -5.73391101e-06,
+                    7.58711054e-08, -4.21266737e-10};
+
+            //green = poly(greenpoly, x);
+        }
+        // B
+        if (temperature < 1900) {
+            blue = 0;
+        } else if (temperature < 6600) {
+            double[] bluepoly = {4.93997706e-01, -8.59349314e-01,
+                    5.45514949e-01, -1.81694167e-01,
+                    4.16704799e-02, -6.01602324e-03,
+                    4.80731598e-04, -1.61366693e-05};
+            //blue = poly(bluepoly, x);
+        } else {
+            blue = 1;
+        }
+
+        //red = clamp(red, 0, 1);
+        //blue = clamp(blue, 0, 1);
+        //green = clamp(green, 0, 1);
+        return null; // new Color((float) red, (float) green, (float) blue);
+    }
+
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
     {

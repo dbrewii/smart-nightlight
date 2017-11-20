@@ -26,14 +26,14 @@ void setup() {
 
 void loop() {
   if (bluetooth.available()) { // check if anything in UART buffer
-    if(bluetooth.read() == '1'){ // did we receive this character?
-       digitalWrite(LED_BUILTIN,HIGH); // if so, toggle the onboard LED
+    //if(bluetooth.read() == '1'){ // did we receive this character?
+    //   digitalWrite(LED_BUILTIN,HIGH); // if so, toggle the onboard LED
        
-    }
-    else{
-       digitalWrite(LED_BUILTIN,LOW); // if so, toggle the onboard LED
+    //}
+    //else{
+    //   digitalWrite(LED_BUILTIN,LOW); // if so, toggle the onboard LED
 
-    }
+    //}
   }
   
   unsigned long currentMillis = millis();

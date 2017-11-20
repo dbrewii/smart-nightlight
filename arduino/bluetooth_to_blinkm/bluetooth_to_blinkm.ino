@@ -24,7 +24,7 @@
 
 #include <SoftwareSerial.h> // use the software uart
 #include <stdint.h>
-SoftwareSerial bluetooth(2, 4); // RX, TX
+SoftwareSerial bluetooth(4, 5); // RX, TX
 
 unsigned long previousMillis = 0;        // will store last time
 const long interval = 500;           // interval at which to delay
@@ -32,8 +32,8 @@ static uint32_t tmp; // increment this
 String temp="";
 // the setup function runs once when you press reset or power the board
 void setup() {
-  Serial.begin(9600);
-  bluetooth.begin(9600);
+  Serial.begin(115200);
+  bluetooth.begin(115200);
   
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
