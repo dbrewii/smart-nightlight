@@ -21,8 +21,17 @@
 
 #include "Wire.h"
 #include "BlinkM_funcs.h"
+#include <SoftwareSerial.h>
 
 #include <avr/pgmspace.h>  // for progmem stuff
+
+String x = "0"; //Variable for storing received data
+int y;
+SoftwareSerial BT(10, 11); // RX, TX
+
+
+
+
 
 // set this if you're plugging a BlinkM directly into an Arduino,
 // into the standard position on analog in pins 2,3,4,5
@@ -60,26 +69,26 @@ const char helpstr[] PROGMEM =
 void help()
 {
  for( int i=0; i<strlen(helpstr); i++ ) {
-    Serial.print( (char) pgm_read_byte(helpstr+i) );
+    BT.print( (char) pgm_read_byte(helpstr+i) );
   }
 }
 
 // called when address is found in BlinkM_scanI2CBus()
 void scanfunc( byte addr, byte result ) {
-  Serial.print("addr: ");
-  Serial.print(addr,DEC);
-  Serial.print( (result==0) ? " found!":"       ");
-  Serial.print( (addr%4) ? "\t":"\n");
+  BT.print("addr: ");
+  BT.print(addr,DEC);
+  BT.print( (result==0) ? " found!":"       ");
+  BT.print( (addr%4) ? "\t":"\n");
 }
 
 void lookForBlinkM() {
-  Serial.print("Looking for a BlinkM: ");
+  BT.print("Looking for a BlinkM: ");
   int a = BlinkM_findFirstI2CDevice();
   if( a == -1 ) {
-    Serial.println("No I2C devices found");
+    BT.println("No I2C devices found");
   } else { 
-    Serial.print("Device found at addr ");
-    Serial.println( a, DEC);
+    BT.print("Device found at addr ");
+    BT.println( a, DEC);
     blinkm_addr = a;
   }
 }
@@ -87,6 +96,8 @@ void lookForBlinkM() {
 // arduino setup func
 void setup()
 {
+    BT.begin(9600);                              
+
   if( BLINKM_ARDUINO_POWERED )
     BlinkM_beginWithPower();
   else
@@ -97,8 +108,6 @@ void setup()
 
   //BlinkM_setAddress( blinkm_addr );  // uncomment to set address
   delay(1000);
-  
-  Serial.begin(9600);
 
   help();
   
@@ -115,16 +124,19 @@ void setup()
     }
   }
   */
-  Serial.print("cmd>");
+  BT.print("cmd>");
 }
 
 // arduino loop func
 void loop()
 {
+
+
+  
   int num;
   //read the serial port and create a string out of what you read
   if( readSerialString() ) {
-    Serial.println(serInStr);
+    BT.println(serInStr);
     char cmd = serInStr[0];  // first char is command
     char* str = serInStr;
     while( *++str == ' ' );  // got past any intervening whitespace
@@ -137,46 +149,46 @@ void loop()
       byte b = toHex( str[2],str[3] );
       byte c = toHex( str[4],str[5] );
       if( cmd == 'c' ) {
-        Serial.print("Fade to r,g,b:");
+        BT.print("Fade to r,g,b:");
         BlinkM_fadeToRGB( blinkm_addr, a,b,c);
       } else if( cmd == 'h' ) {
-        Serial.print("Fade to h,s,b:");
+        BT.print("Fade to h,s,b:");
         BlinkM_fadeToHSB( blinkm_addr, a,b,c);
       } else if( cmd == 'C' ) {
-        Serial.print("Random by r,g,b:");
+        BT.print("Random by r,g,b:");
         BlinkM_fadeToRandomRGB( blinkm_addr, a,b,c);
       } else if( cmd == 'H' ) {
-        Serial.print("Random by h,s,b:");
+        BT.print("Random by h,s,b:");
         BlinkM_fadeToRandomHSB( blinkm_addr, a,b,c);
       }
-      Serial.print(a,HEX); Serial.print(",");
-      Serial.print(b,HEX); Serial.print(",");
-      Serial.print(c,HEX); Serial.println();
+      BT.print(a,HEX); Serial.print(",");
+      BT.print(b,HEX); Serial.print(",");
+      BT.print(c,HEX); Serial.println();
     }
     else if( cmd == 'f' ) {
-      Serial.print("Set fade speed to:"); Serial.println(num,DEC);
+      BT.print("Set fade speed to:"); BT.println(num,DEC);
       BlinkM_setFadeSpeed( blinkm_addr, num);
     }
     else if( cmd == 't' ) {
-      Serial.print("Set time adj:"); Serial.println(num,DEC);
+      BT.print("Set time adj:"); BT.println(num,DEC);
       BlinkM_setTimeAdj( blinkm_addr, num);
     }
     else if( cmd == 'p' ) {
-      Serial.print("Play script #");
-      Serial.println(num,DEC);
+      BT.print("Play script #");
+      BT.println(num,DEC);
       BlinkM_playScript( blinkm_addr, num,0,0 );
     }
     else if( cmd == 'o' ) {
-      Serial.println("Stop script");
+      BT.println("Stop script");
       BlinkM_stopScript( blinkm_addr );
     }
     else if( cmd == 'g' ) {
-      Serial.print("Current color: ");
+      BT.print("Current color: ");
       byte r,g,b;
       BlinkM_getRGBColor( blinkm_addr, &r,&g,&b);
-      Serial.print("r,g,b:"); Serial.print(r,HEX);
-      Serial.print(",");      Serial.print(g,HEX);
-      Serial.print(",");      Serial.println(b,HEX);
+      BT.print("r,g,b:"); BT.print(r,HEX);
+      BT.print(",");      BT.print(g,HEX);
+      BT.print(",");      BT.println(b,HEX);
     }
     /*
       else if( cmd == 'W' ) { 
@@ -190,65 +202,65 @@ void loop()
     */
     else if( cmd == 'A' ) {
       if( num>0 && num<0xff ) {
-        Serial.print("Setting address to: ");
-        Serial.println(num,DEC);
+        BT.print("Setting address to: ");
+        BT.println(num,DEC);
         BlinkM_setAddress(num);
         blinkm_addr = num;
       } else if ( num == 0 ) {
-        Serial.println("Resetting address to default 9: ");
+        BT.println("Resetting address to default 9: ");
         blinkm_addr = 9;
         BlinkM_setAddress(blinkm_addr);
       }
     }
     else if( cmd == 'a' ) {
-      Serial.print("Address: ");
+      BT.print("Address: ");
       num = BlinkM_getAddress(0); 
       Serial.println(num);
     }
     else if( cmd == '@' ) {
-      Serial.print("Will now talk on BlinkM address: ");
-      Serial.println(num,DEC);
+      BT.print("Will now talk on BlinkM address: ");
+      BT.println(num,DEC);
       blinkm_addr = num;
     }
     else if( cmd == 'Z' ) { 
-      Serial.print("BlinkM version: ");
+      BT.print("BlinkM version: ");
       num = BlinkM_getVersion(blinkm_addr);
       if( num == -1 )
-        Serial.println("couldn't get version");
-      Serial.print( (char)(num>>8) ); 
-      Serial.println( (char)(num&0xff) );
+        BT.println("couldn't get version");
+      BT.print( (char)(num>>8) ); 
+      BT.println( (char)(num&0xff) );
     }
     else if( cmd == 'B' ) {
-      Serial.print("Set startup mode:"); Serial.println(num,DEC);
+      BT.print("Set startup mode:"); BT.println(num,DEC);
       BlinkM_setStartupParams( blinkm_addr, num, 0,0,1,0);
     }
     else if( cmd == 'i' ) {
-      Serial.print("get Inputs: ");
+      BT.print("get Inputs: ");
       byte inputs[4];
       BlinkM_getInputs(blinkm_addr, inputs); 
       for( byte i=0; i<4; i++ ) {
-        Serial.print(inputs[i],HEX);
-        Serial.print( (i<3)?',':'\n');
+        BT.print(inputs[i],HEX);
+        BT.print( (i<3)?',':'\n');
       }
     }
     else if( cmd == 's' ) { 
       lookForBlinkM();
     }
     else if( cmd == 'S' ) {
-      Serial.println("Scanning I2C bus from 1-100:");
+      BT.println("Scanning I2C bus from 1-100:");
       BlinkM_scanI2CBus(1,100, scanfunc);
-      Serial.println();
+      BT.println();
     }
     else if( cmd == 'R' ) {
-      Serial.println("Doing Factory Reset");
+      BT.println("Doing Factory Reset");
       blinkm_addr = 0x09;
       BlinkM_doFactoryReset();
     }
     else { 
-      Serial.println("Unrecognized cmd");
+      BT.println("Unrecognized cmd");
     }
     serInStr[0] = 0;  // say we've used the string
-    Serial.print("cmd>");
+    BT.print("cmd>");
   } //if( readSerialString() )
   
 }
@@ -257,15 +269,15 @@ void loop()
 //you must supply the array variable
 uint8_t readSerialString()
 {
-  if(!Serial.available()) {
+  if(!BT.available()) {
     return 0;
   }
   delay(10);  // wait a little for serial data
 
   memset( serInStr, 0, sizeof(serInStr) ); // set it all to zero
   int i = 0;
-  while(Serial.available() && i<serStrLen ) {
-    serInStr[i] = Serial.read();   // FIXME: doesn't check buffer overrun
+  while(BT.available() && i<serStrLen ) {
+    serInStr[i] = BT.read();   // FIXME: doesn't check buffer overrun
     i++;
   }
   //serInStr[i] = 0;  // indicate end of read string
