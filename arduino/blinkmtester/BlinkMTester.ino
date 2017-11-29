@@ -27,7 +27,7 @@
 
 String x = "0"; //Variable for storing received data
 int y;
-SoftwareSerial BT(10, 11); // RX, TX
+SoftwareSerial BT(10, 11); // TX, RX
 
 
 
