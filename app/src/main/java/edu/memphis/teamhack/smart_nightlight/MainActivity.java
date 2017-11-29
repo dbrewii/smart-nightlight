@@ -45,6 +45,7 @@ import edu.memphis.teamhack.smart_nightlight.BluetoothActivity;
 import static android.os.Build.VERSION_CODES.M;
 import static android.support.v4.math.MathUtils.clamp;
 import static edu.memphis.teamhack.smart_nightlight.R.id.textView;
+import static edu.memphis.teamhack.smart_nightlight.R.string.send;
 //import android.widget.AdapterView.OnClickListener
 
 public class MainActivity extends AppCompatActivity implements OnItemSelectedListener {
@@ -79,10 +80,11 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     private int intensity= DEFAULT_INTENSITY;
     private int brightness=DEFAULT_BRIGHT;
     private String colorHex=KtoRGB.k2hex(intensity);
-    private final int MAX_TEMP = 5000;
+    private final int MAX_TEMP = 4000;
     private final int MAX_BRIGHT = 100;
     private final int INTERVAL_TEMP = 100;
     private final int INTERVAL_BRIGHT = 1;
+    private final int DELAY = 200;
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view,
@@ -107,13 +109,14 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
             //Bluetooth
         //comment out when Arduino is absent
-        //Intent newint = getIntent();
-        //address = newint.getStringExtra(BluetoothActivity.EXTRA_ADDRESS); //receive the address of the bluetooth device
+        Intent newint = getIntent();
+        address = newint.getStringExtra(BluetoothActivity.EXTRA_ADDRESS); //receive the address of the bluetooth device
 
-        //new ConnectBT().execute(); //Call the class to connect
+        new ConnectBT().execute(); //Call the class to connect
 
 
         setColorHex();
+        //sendParam("c"+colorHex);
         //other
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -192,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
                 setColorHex();
                 colorView.setBackgroundColor(Color.parseColor("#"+colorHex));
                 //sending parameters to LED in realtime!
-                sendParam(colorHex);
+                sendParam("c" + colorHex);
                 //System.out.println("Kelvin:" + intensity);
                 //System.out.println("Color hex:" + KtoRGB.k2hex(intensity));
                 //Toast.makeText(getApplicationContext(), "Kelvin:" + intensity, Toast.LENGTH_SHORT).show();
@@ -217,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
                 brightness = progressValue;
                 setColorHex();
                 colorView.setBackgroundColor(Color.parseColor("#"+colorHex));
-                sendParam(colorHex);
+                sendParam("c" + colorHex);
                 //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
             }
 
@@ -242,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         {
             try
             {
-                btSocket.getOutputStream().write(("c"+param).getBytes());
+                btSocket.getOutputStream().write((param).getBytes());
             }
             catch (IOException e)
             {

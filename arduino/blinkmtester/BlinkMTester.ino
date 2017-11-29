@@ -19,7 +19,8 @@
  */
 
 
-#include "Wire.h"
+#include "Wire.h".
+
 #include "BlinkM_funcs.h"
 #include <SoftwareSerial.h>
 
