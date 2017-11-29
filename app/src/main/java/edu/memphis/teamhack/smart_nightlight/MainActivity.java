@@ -92,10 +92,10 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         // An item was selected. You can retrieve the selected item using
         if(presetsArray[pos].equals("Baby")){
 
-            Toast.makeText(getApplicationContext(),"pap",Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),"pap",Toast.LENGTH_LONG).show();
         }
         if(presetsArray[pos].equals("Pet")){
-            Toast.makeText(getApplicationContext(),"pop",Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),"pop",Toast.LENGTH_LONG).show();
         }
     }
     public void onNothingSelected(AdapterView<?> parent) {
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
         sendBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
-
+                    //sendParam(colorHex);
             }
         });
 
@@ -191,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
                 intensity = progressValue;
                 setColorHex();
                 colorView.setBackgroundColor(Color.parseColor("#"+colorHex));
+                //sending parameters to LED in realtime!
+                sendParam(colorHex);
                 //System.out.println("Kelvin:" + intensity);
                 //System.out.println("Color hex:" + KtoRGB.k2hex(intensity));
                 //Toast.makeText(getApplicationContext(), "Kelvin:" + intensity, Toast.LENGTH_SHORT).show();
@@ -215,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
                 brightness = progressValue;
                 setColorHex();
                 colorView.setBackgroundColor(Color.parseColor("#"+colorHex));
+                sendParam(colorHex);
                 //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
             }
 
@@ -233,13 +236,13 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
 
 
-
+    //sending the colorHex value to the Arduino
     public void sendParam(String param){
         if (btSocket!=null)
         {
             try
             {
-                btSocket.getOutputStream().write(param.toString().getBytes());
+                btSocket.getOutputStream().write(("c"+param).getBytes());
             }
             catch (IOException e)
             {
