@@ -8,7 +8,7 @@ public class KtoRGB {
     /**
      * Convert color temperature in Kelvins to RGB color for AWT
      *
-     * @param temperature
+     * (at)param temperature
      * @return ready to use color object
      */
 //    public static double[] getRGBFromK(int temperature) {
@@ -170,6 +170,42 @@ public class KtoRGB {
         rgb[2] = b;
         return rgb;
 
+    }
+
+    public static double[] hsi2rgb(double H, double S, double I) {
+        I=I/100.0;
+        double r, g, b;
+        double [] rgb= new double[3];
+        H = H % 360.0; // cycle H around to 0-360 degrees
+        H = 3.14159*H/ 180.0; // Convert to radians.
+        S = S>0?(S<1?S:1):
+                0; // clamp S and I to interval [0,1]
+        I = I>0?(I<1?I:1):
+                0;
+
+        // Math! Thanks in part to Kyle Miller.
+        if(H < 2.09439) {
+            r = 255*I/3.0*(1+S*Math.cos(H)/Math.cos(1.047196667-H));
+            g = 255*I/3.0*(1+S*(1-Math.cos(H)/Math.cos(1.047196667-H)));
+            b = 255*I/3.0*(1-S);
+        }
+        else if(H < 4.188787) {
+            H = H - 2.09439;
+            g = 255*I/3.0*(1+S*Math.cos(H)/Math.cos(1.047196667-H));
+            b = 255*I/3.0*(1+S*(1-Math.cos(H)/Math.cos(1.047196667-H)));
+            r = 255*I/3.0*(1-S);
+        }
+        else {
+            H = H - 4.188787;
+            b = 255*I/3.0*(1+S*Math.cos(H)/Math.cos(1.047196667-H));
+            r = 255*I/3.0*(1+S*(1-Math.cos(H)/Math.cos(1.047196667-H)));
+            g = 255*I/3.0*(1-S);
+        }
+        rgb[0]=r;
+        rgb[1]=g;
+        rgb[2]=b;
+
+        return rgb;
     }
 
     //only works with 0-255 RGB arrays

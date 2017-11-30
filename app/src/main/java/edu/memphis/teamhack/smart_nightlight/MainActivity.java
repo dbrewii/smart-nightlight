@@ -76,13 +76,13 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
     //set a default value for each
     private final int DEFAULT_BRIGHT = 50;
-    private final int DEFAULT_INTENSITY = 1000;
+    private final int DEFAULT_INTENSITY = 10;
     private int intensity= DEFAULT_INTENSITY;
     private int brightness=DEFAULT_BRIGHT;
     private String colorHex=KtoRGB.k2hex(intensity);
-    private final int MAX_TEMP = 4000;
+    private final int MAX_HUE = 70;
     private final int MAX_BRIGHT = 100;
-    private final int INTERVAL_TEMP = 100;
+    private final int INTERVAL_HUE = 1;
     private final int INTERVAL_BRIGHT = 1;
     private final int DELAY = 200;
 
@@ -138,9 +138,9 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         colorView = (View) findViewById(R.id.rectangle_at_the_top);
 
         colorView.setBackgroundColor(Color.parseColor("#"+colorHex));
-        intensitySB.setMax(MAX_TEMP);
+        intensitySB.setMax(MAX_HUE);
         intensitySB.setProgress(intensity);
-        intensitySB.incrementProgressBy(INTERVAL_TEMP);
+        intensitySB.incrementProgressBy(INTERVAL_HUE);
 
         brightnessSB.setMax(MAX_BRIGHT);
         brightnessSB.setProgress(DEFAULT_BRIGHT);
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
         sendBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
-                    //sendParam(colorHex);
+                    sendParam(colorHex);
             }
         });
 
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
                 setColorHex();
                 colorView.setBackgroundColor(Color.parseColor("#"+colorHex));
                 //sending parameters to LED in realtime!
-                sendParam("c" + colorHex);
+                //sendParam("c" + colorHex);
                 //System.out.println("Kelvin:" + intensity);
                 //System.out.println("Color hex:" + KtoRGB.k2hex(intensity));
                 //Toast.makeText(getApplicationContext(), "Kelvin:" + intensity, Toast.LENGTH_SHORT).show();
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
                 brightness = progressValue;
                 setColorHex();
                 colorView.setBackgroundColor(Color.parseColor("#"+colorHex));
-                sendParam("c" + colorHex);
+                //sendParam("c" + colorHex);
                 //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
             }
 
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         {
             try
             {
-                btSocket.getOutputStream().write((param).getBytes());
+                btSocket.getOutputStream().write(("c" + param).getBytes());
             }
             catch (IOException e)
             {
@@ -256,13 +256,15 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     //sets colorHex to be sent to light based upon intensity and brightness
     public void setColorHex(){
         double [] rgb;
-        rgb=KtoRGB.k2rgb(intensity);
+        rgb=KtoRGB.hsi2rgb(intensity,1,brightness);
 
+        //deprecated block
         //brightness scales the color, so if you have R=255,G=0,B=0;
         //brightness = 50 means that R=128. It's considered the same H & S in an HSV colorspace
-        rgb[0]=((double)brightness/100.0)*rgb[0];
-        rgb[1]=((double)brightness/100.0)*rgb[1];
-        rgb[2]=((double)brightness/100.0)*rgb[2];
+        //rgb[0]=((double)brightness/100.0)*rgb[0];
+        //rgb[1]=((double)brightness/100.0)*rgb[1];
+        ///rgb[2]=((double)brightness/100.0)*rgb[2];
+
         this.colorHex=KtoRGB.rgb2hex(rgb);
     }
     @Override
